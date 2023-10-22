@@ -1,12 +1,15 @@
 import random
-from mybrutelibs.libs.gladiator import Gladiator
-from mybrutelibs.libs.arena import Arena
+import sys
+
+sys.path.append("../mybrutelibs/libs")
+from gladiator import Gladiator
+from arena import Arena
 
 
 class League:
-    def __init__(self, ame: str, gladiators: list[Gladiator]) -> None:
+    def __init__(self, name: str, gladiators: list[Gladiator]) -> None:
         self.gladiators = gladiators
-
+        self.name = name
         for gladiator in self.gladiators:
             gladiator.next_level()
 

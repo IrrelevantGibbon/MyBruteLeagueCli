@@ -9,4 +9,4 @@ class ContextManager:
         self.__context[name] = value
 
     def get_context(self, name: str) -> Any:
-        return self.__context[name]
+        return self.__context.get(name)
