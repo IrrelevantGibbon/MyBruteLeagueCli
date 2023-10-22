@@ -13,6 +13,11 @@ class League:
         for gladiator in self.gladiators:
             gladiator.next_level()
 
+    def add_gladiator(self, gladiator_name: str) -> None:
+        gladiator = Gladiator().new(r(), gladiator_name)
+        gladiator.next_level()
+        self.gladiators.append(gladiator)
+
     def fight(self):
         gladiators = self.gladiators.copy()
         random.shuffle(gladiators)
