@@ -2,6 +2,7 @@ from typing import Dict, List, Any
 from context_manager import ContextManager
 from file_manager import FileManager
 from league import League
+import os
 
 
 class Commands:
@@ -131,17 +132,18 @@ class RankingBruteLeagueCommands(Commands):
             print("No League selected")
             return
         league.print_ranking()
-        
+
+
 class FightBruteLeagueCommands(Commands):
     def __init__(self):
         super().__init__("Fight", "Fight a my brute League")
         self.fight_number: int = 1
-    
+
     def parse_args(self, args: List[Any]) -> None:
         if len(args) == 0 and args[0].isdigit():
             return self.error()
         self.fight_number = int(args[0])
-        
+
     def run(self, context_manager: ContextManager) -> None:
         league: League = context_manager.get_context("league")
         if league is None:
@@ -150,9 +152,28 @@ class FightBruteLeagueCommands(Commands):
         for _ in range(self.fight_number):
             league.fight()
         league.print_ranking()
-        
+
     def error(self) -> None:
         print("Error: No number given for the fight")
+
+
+class ShowBruteLeagueCommands(Commands):
+    def __init__(self):
+        super().__init__("Show", "Show a my brute League")
+        self.brute_name: str = ""
+
+    def parse_args(self, args: List[Any]) -> None:
+        if len(args) == 0:
+            return self.error()
+        self.brute_name = args[0]
+
+    def run(self, context_manager: ContextManager) -> None:
+        league: League = context_manager.get_context("league")
+        if league is None:
+            print("No League selected")
+            return
+        league.print_gladiator(self.brute_name)
+
 
 class HelpCommands(Commands):
     def __init__(self, commands: Dict[str, Commands]):
@@ -163,6 +184,14 @@ class HelpCommands(Commands):
         print("Available commands:\n")
         for command in self.commands.values():
             print(f"    {command.name}: {command.description}")
+
+
+class ClearCommands(Commands):
+    def __init__(self):
+        super().__init__("Clear", "Clear the console")
+
+    def run(self) -> None:
+        os.system("cls" if os.name == "nt" else "clear")
 
 
 class QuitCommands(Commands):

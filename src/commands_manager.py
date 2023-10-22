@@ -1,6 +1,7 @@
-from typing import Dict, Callable
+from typing import Dict, List
 from commands import (
     AddBruteCommands,
+    ClearCommands,
     Commands,
     FightBruteLeagueCommands,
     HelpCommands,
@@ -12,6 +13,7 @@ from commands import (
     DeleteLeagueCommands,
     RankingBruteLeagueCommands,
     SaveLeagueCommands,
+    ShowBruteLeagueCommands,
 )
 from context_manager import ContextManager
 from file_manager import FileManager
@@ -40,8 +42,10 @@ class CommandsManager:
         self.add_command(ListLeagueCommands())
         self.add_command(DeleteLeagueCommands())
         self.add_command(AddBruteCommands())
+        self.add_command(ShowBruteLeagueCommands())
         self.add_command(FightBruteLeagueCommands())
         self.add_command(RankingBruteLeagueCommands())
+        self.add_command(ClearCommands())
         self.add_command(HelpCommands(self.commands))
         self.add_command(QuitCommands())
 
