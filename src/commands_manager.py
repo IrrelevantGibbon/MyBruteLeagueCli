@@ -29,7 +29,7 @@ class CommandNotFound(Exception):
 
 class CommandsManager:
     def __init__(self, context_manager: ContextManager, file_manager: FileManager):
-        self.commands: Dict[str, Commands] = {}
+        self.commands: List[Commands] = []
         self.context_manager = context_manager
         self.file_manager = file_manager
         self.add_base_commands()
@@ -51,6 +51,7 @@ class CommandsManager:
 
     def add_command(self, command: Commands):
         self.commands[command.name] = command
+        self.commands.append(command)
 
     def get_line(self, line: str):
         line = line.strip()
@@ -58,15 +59,21 @@ class CommandsManager:
         command_args = line.split(" ")[1:]
         self.call_commands(command_name, command_args)
 
-    def call_commands(self, command: str, data: str | None = None):
-        if command in self.commands:
-            self.commands[command].parse_args(data)
-            args = self.injects_parameters(self.commands[command])
-            self.commands[command].run(**args)
+    def get_commands_from_name(self, command: str) -> Commands | None:
+        for c in self.commands:
+            if command in c.command_names:
+                return c
+        return None
+
+    def call_commands(self, command_name: str, data: str | None = None) -> None:
+        command: Commands | None = self.get_commands_from_name(command_name)
+        if command is not None:
+            command.parse_args(data)
+            command.run(**self.injects_parameters(command))
         else:
             print(f"Command {command} not found")
 
-    def injects_parameters(self, command: str):
+    def injects_parameters(self, command: Commands) -> Dict[str, any]:
         params = inspect.signature(command.run).parameters
         args = {}
         if "context_manager" in params:
